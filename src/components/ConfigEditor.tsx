@@ -25,6 +25,34 @@ const mongoConnectionStringSchemes: SelectableValue[] = [
 ];
 
 export function ConfigEditor(props: Props) {
+  const onClientKeyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...jsonData,
+        clientKey: event.target.value,
+      },
+    });
+  };
+  const onClientCertChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...jsonData,
+        clientCertificate: event.target.value,
+      },
+    });
+  };
+
+  const onCACertChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onOptionsChange({
+      ...options,
+      jsonData: {
+        ...jsonData,
+        caCertificate: event.target.value,
+      },
+    });
+  };
   const { onOptionsChange, options } = props;
   const { jsonData, secureJsonFields, secureJsonData } = options;
 
@@ -134,7 +162,7 @@ export function ConfigEditor(props: Props) {
   };
 
   return (
-    <>
+  <>
       <Field label="Connection string scheme">
         <RadioButtonGroup
           options={mongoConnectionStringSchemes}
@@ -183,6 +211,32 @@ export function ConfigEditor(props: Props) {
         ></Input>
       </InlineField>
       <Divider />
+      <FieldSet label="TLS Certificates">
+        <Field label="Client Certificate (PEM)" description="Paste the contents of your client certificate (PEM format) here.">
+          <textarea
+            rows={6}
+            style={{ width: '100%' }}
+            value={jsonData.clientCertificate || ''}
+            onChange={onClientCertChange}
+          />
+        </Field>
+        <Field label="Client Key (PEM)" description="Paste the contents of your private client key (PEM format) here.">
+          <textarea
+            rows={6}
+            style={{ width: '100%' }}
+            value={jsonData.clientKey || ''}
+            onChange={onClientKeyChange}
+          />
+        </Field>
+        <Field label="CA Certificate (PEM)" description="Paste the contents of your CA certificate (PEM format) here.">
+          <textarea
+            rows={6}
+            style={{ width: '100%' }}
+            value={jsonData.caCertificate || ''}
+            onChange={onCACertChange}
+          />
+        </Field>
+      </FieldSet>
       <FieldSet label="Authentication">
         <Field label="Authentication method">
           <RadioButtonGroup

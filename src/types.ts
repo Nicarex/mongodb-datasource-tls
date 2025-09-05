@@ -65,6 +65,9 @@ export interface MongoDataSourceOptions extends DataSourceJsonData {
   database?: string;
   username?: string;
   connectionParameters?: string;
+  clientCertificate?: string; // PEM contents for client cert
+  clientKey?: string;         // PEM contents for client key
+  caCertificate?: string;     // PEM contents for CA cert
 }
 
 export interface MySecureJsonData {

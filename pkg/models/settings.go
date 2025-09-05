@@ -15,6 +15,9 @@ type PluginSettings struct {
 	Username               string                `json:"username"`
 	ConnectionStringScheme string                `json:"connectionStringScheme"`
 	ConnectionParameters   string                `json:"connectionParameters"`
+	ClientCertificate      string                `json:"clientCertificate"`
+	ClientKey              string                `json:"clientKey"`
+	CACertificate          string                `json:"caCertificate"`
 	Secrets                *SecretPluginSettings `json:"-"`
 }
 

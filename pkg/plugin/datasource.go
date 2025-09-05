@@ -11,6 +11,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/haohanyang/mongodb-datasource/pkg/models"
+	"github.com/haohanyang/mongodb-datasource/pkg/plugin"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -43,6 +44,22 @@ func NewDatasource(ctx context.Context, source backend.DataSourceInstanceSetting
 	}
 
 	opts := options.Client().ApplyURI(uri)
+
+	// TLS setup: allow CA only, client cert/key optional
+	if config.CACertificate != "" {
+		var tlsConfig *tls.Config
+		var tlsErr error
+		if config.ClientCertificate != "" && config.ClientKey != "" {
+			tlsConfig, tlsErr = CreateTLSConfig(config.ClientCertificate, config.CACertificate, config.ClientKey)
+		} else {
+			tlsConfig, tlsErr = CreateTLSConfig("", config.CACertificate, "")
+		}
+		if tlsErr != nil {
+			backend.Logger.Error("Failed to create TLS config", "error", tlsErr)
+			return nil, tlsErr
+		}
+		opts.SetTLSConfig(tlsConfig)
+	}
 
 	client, err := mongo.Connect(ctx, opts)
 	if err != nil {
