@@ -11,7 +11,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/haohanyang/mongodb-datasource/pkg/models"
-	"github.com/haohanyang/mongodb-datasource/pkg/plugin"
+	"github.com/haohanyang/mongodb-datasource/pkg/tlsutil"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -50,9 +50,9 @@ func NewDatasource(ctx context.Context, source backend.DataSourceInstanceSetting
 		var tlsConfig *tls.Config
 		var tlsErr error
 		if config.ClientCertificate != "" && config.ClientKey != "" {
-			tlsConfig, tlsErr = CreateTLSConfig(config.ClientCertificate, config.CACertificate, config.ClientKey)
+			tlsConfig, tlsErr = tlsutil.CreateTLSConfig(config.ClientCertificate, config.CACertificate, config.ClientKey)
 		} else {
-			tlsConfig, tlsErr = CreateTLSConfig("", config.CACertificate, "")
+			tlsConfig, tlsErr = tlsutil.CreateTLSConfig("", config.CACertificate, "")
 		}
 		if tlsErr != nil {
 			backend.Logger.Error("Failed to create TLS config", "error", tlsErr)
